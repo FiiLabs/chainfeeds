@@ -1,0 +1,36 @@
+<html>
+<head>
+  <title>Main outline</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+</head>
+<body>
+  <h1>Main outline Home Page</h1>
+  <ul>
+  {% for f in suboutlines_page %}
+    <!-- <li><a href="{{ f.link }}">{{ f.title }}</a> ({{ f.author }} {{ f.published }} entries)</li> -->
+    <li><a href="#" id="{{f.title}}">{{ f.title }}</a> entry</li>
+  {% endfor %}
+  </ul>
+</body>
+<script>
+
+
+   $( "a" ).click(function(event) {
+    event.preventDefault();
+    var id = event.target.id
+    console.log(id);
+    var get_url = '/api/suboutline'
+    $.ajax({
+      url: get_url,
+      type: 'GET',
+      data: {
+        suboutline_title: id
+      },
+      success: function(data) {
+        location.href = get_url + '?suboutline_title=' + id
+      }
+    })
+  });
+</script>
+
+</html>
