@@ -10,5 +10,5 @@ pip install -r requirements.txt
 ## Run
 
 ```bash
-flask --app=feeds run
+make run
 ```
