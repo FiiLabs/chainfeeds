@@ -24,6 +24,8 @@ def get_main_outlines_from_chain_feeds():
     return main_outline_dict
 
 global_main_outlines = get_main_outlines_from_chain_feeds()
+global_feeds_cache = {}
+
 
 # Get ouline title from index
 def get_main_outline_title(index):
@@ -95,9 +97,16 @@ def suboutline():
         return "has not suboutline"
     
     suboutline = get_suboutline(suboutlinetitle);
-    print("parseing  xmlUrl: ", suboutline.xmlUrl)
-    feed = feedparser.parse(suboutline.xmlUrl)
-    print("suboutline parse xmlUrl leave: ",suboutline.xmlUrl)
+    
+    feed = None
+    if not suboutline.xmlUrl in global_feeds_cache:
+        print("parseing  xmlUrl: ", suboutline.xmlUrl)
+        feed = feedparser.parse(suboutline.xmlUrl)
+        print("suboutline parse xmlUrl leave: ",suboutline.xmlUrl)
+        global_feeds_cache[suboutline.xmlUrl] = feed
+    else:
+        feed = global_feeds_cache[suboutline.xmlUrl]
+    
     feeds = []
     for entry in feed.entries:
         link = utils.remove_prefix(entry.link, "?source=rss")
