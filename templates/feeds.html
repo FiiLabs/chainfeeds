@@ -7,11 +7,19 @@
 </head>
 <body>
   <h1>Main outline Home Page</h1>
-  <ul class="list-group">
+  <div class="list-group">
   {% for f in suboutlines_page %}
-    <li class="list-group-item"><a href="{{ f.link }}">{{ f.title }}</a> ({{ f.author }} {{ f.published }} entry)</li>
+    <a class="list-group-item list-group-item-action" href="{{ f.link }}">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{ f.title }}</h5>
+        <small>{{ f.published }}</small>
+      </div>
+      <p> <a href="{{ f.link }}">{{ f.link }}</a></p>
+      <small>({{ f.author }})</small>
+    </a> 
+    
   {% endfor %}
-  </ul>
+  </div>
 </body>
 <script>
    $( "a" ).click(function(event) {

@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request
 import feedparser
 import opml
 import openai_davinci
+import utils
 
 app = Flask(__name__)
 
@@ -94,15 +95,16 @@ def suboutline():
         return "has not suboutline"
     
     suboutline = get_suboutline(suboutlinetitle);
-    print("suboutline title: ", suboutline.title)
+    print("parseing  xmlUrl: ", suboutline.xmlUrl)
     feed = feedparser.parse(suboutline.xmlUrl)
-    print("suboutline title parse leave: ", suboutline.title)
+    print("suboutline parse xmlUrl leave: ",suboutline.xmlUrl)
     feeds = []
     for entry in feed.entries:
-        print("link: ", entry.link)
+        link = utils.remove_prefix(entry.link, "?source=rss")
+        print("entry summary:", entry.summary)
         feeds.append({
             'title': entry.title,
-            'link': entry.link,
+            'link': link,
             'author': entry.author,
             'published': entry.published,
             'summary': entry.summary,
