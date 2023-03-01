@@ -3,6 +3,7 @@ import feedparser
 import opml
 import openai_davinci
 import utils
+import threading
 
 app = Flask(__name__)
 
@@ -34,17 +35,18 @@ def get_main_outline_title(index):
 
 # feeds parser
 def parse_feeds(subOutlines):
-    for sub_outline in subOutlines:
-        feed = feedparser.parse(sub_outline.xmlUrl)
-        for entry in feed.entries:
-            print("entry keys: ", entry.keys())
-            print("entry title: ", entry.title)
-            print("entry link: ", entry.link)
-            print("entry author: ", entry.author)
-            print("entry published: ", entry.published)
-            print("entry summary: ", entry.summary)
-            print("entry content: ", entry.content)
-           
+    for sub_outline_title in subOutlines:
+        xmlUrl = subOutlines[sub_outline_title].xmlUrl
+        feed = feedparser.parse(xmlUrl)
+        if not xmlUrl in global_feeds_cache:
+            global_feeds_cache[xmlUrl] = feed
+
+
+# define a background thread to parse all of the feeds
+def parse_feeds_background():
+    for main_outline_title in global_main_outlines:
+        suboutlines = global_main_outlines[main_outline_title]
+        parse_feeds(suboutlines)         
 
 # Define a route for the home page
 @app.route('/')
@@ -54,6 +56,9 @@ def home():
         main_outlines.append({
             'title': main_outline_title,
         })
+
+    # run background thread to parse all of the feeds using threading
+    threading.Thread(target=parse_feeds_background).start()
 
     # Render a template with the feeds data as context variable
     return render_template('home.html', mainoulines=main_outlines)
