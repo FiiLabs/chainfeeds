@@ -30,6 +30,13 @@ def translate_text_from_english(text, to_language):
         max_tokens=len(text))
     return translation
 
+def get_keywords_from_request(text):
+    keywords_prompt = "Please find the keywords in this text:\n\n" + text + "\n\n"
+    keywords = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=keywords_prompt,
+        max_tokens=len(text))
+    return keywords
 
 # write a unit test for this function
 def test_get_answer_from_request():
@@ -51,15 +58,15 @@ def test_get_answer_from_request():
     [20] and is on average the third-brightest natural object in the night sky after the Moon and Venus.
     """
 
+    answer = get_summary_from_request(question_prompt)
+    assert answer != None
+    print("The answer is", answer)
+
     question_prompt = """
     Zcash was the first widespread application of zk-SNARKs, a novel form of zero-knowledge cryptography. 
     The strong privacy guarantee of Zcash is derived from the fact that shielded transactions in Zcash can be fully encrypted on the blockchain, 
     yet still be verified as valid under the network’s consensus rules by using zk-SNARK proofs.
     """
-
-    answer = get_answer_from_request(question_prompt)
-    assert answer != None
-    print("The answer is", answer)
 
     answer = translate_text_from_english(question_prompt, "Chinese")
     assert answer != None
