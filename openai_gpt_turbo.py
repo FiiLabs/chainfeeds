@@ -7,7 +7,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY", API_KEY)
 
 def get_answer_from_request(question_prompt):
     answer = openai.Completion.create(
-        engine="text-davinci-003",
+        engine="gpt-3.5-turbo",
         prompt=question_prompt,
         max_tokens=300)
         
@@ -16,7 +16,7 @@ def get_answer_from_request(question_prompt):
 def get_summary_from_request(text):
     summary_prompt = "Please summarize this text as follows: \n\n" + text + "\n\n"
     summary = openai.Completion.create(
-        engine="text-davinci-003",
+        engine="gpt-3.5-turbo",
         prompt=summary_prompt,
         max_tokens=300)
         
@@ -25,7 +25,7 @@ def get_summary_from_request(text):
 def translate_text_from_english(text, to_language):
     translate_prompt = "Plesae translate this text from English to " + to_language + ":\n\n" + text + "\n\n"
     translation = openai.Completion.create(
-        engine="text-davinci-003",
+        engine="gpt-3.5-turbo",
         prompt=translate_prompt,
         max_tokens=len(text))
     return translation
@@ -33,7 +33,7 @@ def translate_text_from_english(text, to_language):
 def get_keywords_from_request(text):
     keywords_prompt = "Please find the keywords in this text:\n\n" + text + "\n\n"
     keywords = openai.Completion.create(
-        engine="text-davinci-003",
+        engine="gpt-3.5-turbo",
         prompt=keywords_prompt,
         max_tokens=len(text))
     return keywords
