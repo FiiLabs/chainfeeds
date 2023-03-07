@@ -10,3 +10,4 @@ flask-restx >= 0.5.0
 web3==5.31.3
 Flask-SQLAlchemy==3.0.3
 psycopg2==2.9.5
+ipfshttpclient==0.8.0a2
