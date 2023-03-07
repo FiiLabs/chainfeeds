@@ -20,7 +20,35 @@ def get_main_outlines_from_chain_feeds():
     return main_outline_dict
 
 global_main_outlines = get_main_outlines_from_chain_feeds()
+# parsed feeds
 global_feeds_cache = {}
+
+
+# get all sub outlines
+def get_all_sub_outlines():
+    sub_outlines = []
+    for main_outline_title in global_main_outlines:
+        suboutlines = global_main_outlines[main_outline_title]
+        for sub_outline_title in suboutlines:
+           sub_outlines.append(suboutlines[sub_outline_title])
+    return sub_outlines
+
+def gen_all_suboutlines_cache():
+    r = {}
+    suboutlines = get_all_sub_outlines()
+    for sub_outline in suboutlines:
+        xmlUrl = sub_outline.xmlUrl
+        r[xmlUrl] = sub_outline
+    return r
+
+# not parsed suboutlines
+global_suboutlines_cache = gen_all_suboutlines_cache()
+
+
+def parse_feed(xmlUrl):
+    if not xmlUrl in global_feeds_cache:
+        global_feeds_cache[xmlUrl] = feedparser.parse(xmlUrl)
+    return global_feeds_cache[xmlUrl]
 
 # feeds parser
 def parse_feeds(subOutlines):

@@ -1,6 +1,7 @@
 from flask_restx import Resource
 from api import api
 import feeds
+import utils
 
 ns = api.namespace("suboutlines", description="main outlines operations")
 
@@ -10,13 +11,38 @@ class SubOutlineList(Resource):
     def get(self):
         """List all sub outlines"""
         sub_outlines = []
-        for main_outline_title in feeds.global_main_outlines:
-            suboutlines = feeds.global_main_outlines[main_outline_title]
-            for sub_outline_title in suboutlines:
-                xmlUrl = suboutlines[sub_outline_title].xmlUrl
-                title = suboutlines[sub_outline_title].title
-                sub_outlines.append({
-                    'title': title,
-                    'xmlUrl': xmlUrl,
-                })
+        l = feeds.get_all_sub_outlines()
+        for sub_outline in l:
+            sub_outlines.append({
+                'title': sub_outline.title,
+                'xmlUrlBase64': utils.base64_encode(sub_outline.xmlUrl),
+            })
         return sub_outlines
+    
+
+@ns.route("/<string:xmlUrlBase64>")
+@api.doc(params={"xmlUrlBase64": "The sub outline xmlUrl Base64 the xmlUrl returned from /suboutlines"})
+class SubOutline(Resource):
+    def get(self, xmlUrlBase64):
+        """Shows a list of the specific sub outline"""
+        xmlUrl = utils.base64_decode(xmlUrlBase64)
+        print("xmlUrl:", xmlUrl)
+        if not xmlUrl in feeds.global_feeds_cache:
+            suboutline = feeds.global_suboutlines_cache[xmlUrl]
+            feed = feeds.parse_feed(suboutline.xmlUrl)
+        else:
+            feed = feeds.global_feeds_cache[xmlUrl]
+        
+        r_feeds = []
+        for entry in feed.entries:
+            link = utils.remove_prefix(entry.link, "?source=rss")
+            print("entry summary:", entry.summary)
+            r_feeds.append({
+                'title': entry.title,
+                'link': link,
+                'author': entry.author,
+                'published': entry.published,
+                'summary': entry.summary,
+                'content': entry.content,
+            })
+        return r_feeds
