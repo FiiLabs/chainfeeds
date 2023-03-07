@@ -4,7 +4,7 @@
 ## Install
 
 ```bash
-pip3 install -r requirements.txt
+make install
 ```
 
 ## Run

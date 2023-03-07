@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request
 import feedparser
 import opml
-import openai_davinci
+import chat_gpt
 import utils
 import threading
 from bs4 import BeautifulSoup

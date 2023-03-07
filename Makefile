@@ -2,4 +2,4 @@ run:
 	flask --app feeds run
 
 install:
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
