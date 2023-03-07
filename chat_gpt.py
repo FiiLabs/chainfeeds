@@ -17,7 +17,7 @@ prompt_dic = {
     # 翻译家
     "translator": "I want you to act as an English translator, inlcudes from English to chinese and from chinese to English.",
     # 评论员
-    "commentariat": "I want you to act as a commentariat. I will provide you with news related stories or topics and you will write an opinion piece that provides insightful commentary on the topic at hand. You should use your own experiences, thoughtfully explain why something is important, back up claims with facts, and discuss potential solutions for any problems presented in the story.",
+    "commentariat": "I want you to act as a commentariat. I will provide you with news  or topics and you will write an opinion piece that provides insightful commentary on the topic at hand. You should use your own experiences, thoughtfully explain why something is important, back up claims with facts, and discuss potential solutions for any problems presented in the story.",
     # 摘要家
     "summarizer": "I want you to act as a summarizer. I will provide you with news related stories or topics and you will write a summary that provides a concise overview of the topic at hand. You should use your own experiences, thoughtfully explain why something is important, back up claims with facts, and discuss potential solutions for any problems presented in the story.",
     # FAQ
@@ -25,7 +25,7 @@ prompt_dic = {
     # 改写
     "rephrase": "I want you to act as a rephraser. rephrase the paragraph that I will write for you.",
     # 科技评论
-    "techreviewer": "I want you to act as a tech reviewer. I will give you the name of a new piece of technology and you will provide me with an in-depth review - including pros, cons, features, and comparisons to other technologies on the market"
+    "techreviewer": "I want you to act as a tech reviewer. I will give you a tech article and you will provide me with an in-depth review - including pros, cons, features, and comparisons to other technologies on the market"
 
 
 }
