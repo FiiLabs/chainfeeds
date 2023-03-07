@@ -5,7 +5,7 @@ import feeds
 from api import api
 
 
-ns = api.namespace("mainoutlines", description="TODO operations")
+ns = api.namespace("mainoutlines", description="main outlines operations")
 
 main_outlines_list = list(feeds.global_main_outlines.keys())
 
