@@ -9,6 +9,9 @@ def add_to_ipfs(filepath, host="127.0.0.1", port="5001"):
 
     # we need to make post request to this endpoint.
     ipfs_url = "http://{host}:{port}/api/v0/add"
+    ipfs_url = ipfs_url.format(host=host, port=port)
+
+    print("Uploading to IPFS...", ipfs_url)
 
     # we need to send a file so we use multipart/form-data
     files = {'file': image_binary}
@@ -47,3 +50,5 @@ def download_from_ipfs(ipfs_hash, save_path, host="127.0.0.1", port="8080"):
     else:
         # Print an error message
         print("File download failed: ", response.reason)
+
+add_to_ipfs("./Makefile")
