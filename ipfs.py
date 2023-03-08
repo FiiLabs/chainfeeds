@@ -50,5 +50,3 @@ def download_from_ipfs(ipfs_hash, save_path, host="127.0.0.1", port="8080"):
     else:
         # Print an error message
         print("File download failed: ", response.reason)
-
-add_to_ipfs("./Makefile")
