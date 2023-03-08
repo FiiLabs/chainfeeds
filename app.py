@@ -20,6 +20,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 from models.user import User
+from models.feeds import Feeds
 
 with app.app_context():
     db.create_all()
