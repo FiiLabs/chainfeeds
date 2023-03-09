@@ -82,13 +82,16 @@ def parse_feeds(subOutlines):
                 published = ""
                 content = ""
                 author = ""
+                summary = ""
                 if hasattr(entry, 'published'):
                     published = entry.published
                 if hasattr(entry, 'content'):
                     content = str(entry.content)
                 if hasattr(entry, 'author'):
                     author  = entry.author
-                feed_record = Feeds(xmlUrl, entry.title, entry.link, author, published, entry.summary, content)
+                if hasattr(entry, 'summary'):
+                    summary = entry.summary
+                feed_record = Feeds(xmlUrl, entry.title, entry.link, author, published,summary, content)
                 db.session.add(feed_record)
                 print("add feed_record title:", entry.title)
             db.session.commit()
