@@ -1,6 +1,8 @@
 import feedparser
 import opml
 from pathlib import Path
+import time
+import locked_dict.locked_dict as locked_dict
 
 def get_main_outlines_from_chain_feeds():
     # Parse the content using opml package
@@ -20,9 +22,11 @@ def get_main_outlines_from_chain_feeds():
     return main_outline_dict
 
 global_main_outlines = get_main_outlines_from_chain_feeds()
+
 # parsed feeds
 global_feeds_cache = {}
 
+d = locked_dict.LockedDict()
 
 # get all sub outlines
 def get_all_sub_outlines():
@@ -52,15 +56,38 @@ def parse_feed(xmlUrl):
 
 # feeds parser
 def parse_feeds(subOutlines):
+    from app import db, Feeds
+   
+
     for sub_outline_title in subOutlines:
         xmlUrl = subOutlines[sub_outline_title].xmlUrl
+        print("parsing_feed:", xmlUrl)
         feed = feedparser.parse(xmlUrl)
+        print("parsed_feed:", xmlUrl)
         if not xmlUrl in global_feeds_cache:
             global_feeds_cache[xmlUrl] = feed
+        else:
+            old_feed = global_feeds_cache[xmlUrl]
+            if (len(old_feed.entries) > 0 and len(feed.entries) > 0) and old_feed.entries[0].link != feed.entries[0].link:
+                global_feeds_cache[xmlUrl] = feed
 
+        # Write cache to db
+        print("write cache to db")
+       
+        entries = global_feeds_cache[xmlUrl].entries
+        for entry in entries:
+            with db.app.app_context():
+                feed_record = Feeds(xmlUrl, entry.title, entry.link, entry.author, entry.published, entry.summary, entry.content)
+                db.session.add(feed_record)
+                db.session.commit()
+                print("write feed entry to db:", entry.title)
+                print("write feed to db:", xmlUrl)
 
 # define a background thread to parse all of the feeds
 def parse_feeds_background():
+    print("parse_feeds_background")
+   # while True:
     for main_outline_title in global_main_outlines:
         suboutlines = global_main_outlines[main_outline_title]
         parse_feeds(suboutlines)   
+       # time.sleep(5*60)

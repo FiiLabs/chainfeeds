@@ -13,3 +13,5 @@ psycopg2==2.9.5
 ipfshttpclient==0.8.0a2
 Flask-Login==0.6.2
 Flask-Cors==3.0.10
+locked-dict==2022.7.25
+Flask-APScheduler==1.12.4
