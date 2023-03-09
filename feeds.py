@@ -78,23 +78,27 @@ def parse_feeds(subOutlines):
        
         entries = global_feeds_cache[xmlUrl].entries
         with db.app.app_context():
-            for entry in entries:
-                published = ""
-                content = ""
-                author = ""
-                summary = ""
-                if hasattr(entry, 'published'):
-                    published = entry.published
-                if hasattr(entry, 'content'):
-                    content = str(entry.content)
-                if hasattr(entry, 'author'):
-                    author  = entry.author
-                if hasattr(entry, 'summary'):
-                    summary = entry.summary
-                feed_record = Feeds(xmlUrl, entry.title, entry.link, author, published,summary, content)
-                db.session.add(feed_record)
-                print("add feed_record title:", entry.title)
-            db.session.commit()
+            try:
+                for entry in entries:
+                    published = ""
+                    content = ""
+                    author = ""
+                    summary = ""
+                    if hasattr(entry, 'published'):
+                        published = entry.published
+                    if hasattr(entry, 'content'):
+                        content = str(entry.content)
+                    if hasattr(entry, 'author'):
+                        author  = entry.author
+                    if hasattr(entry, 'summary'):
+                        summary = entry.summary
+                    feed_record = Feeds(xmlUrl.strip(), entry.title.strip(), entry.link.strip(), author.strip(), published.strip(),summary.strip(), content.strip())
+                    db.session.add(feed_record)
+                    print("add feed_record title:", entry.title)
+                db.session.commit()
+            except Exception as e:
+                print("database error:", e)
+                #db.session.rollback()
                 
 
 # define a background thread to parse all of the feeds
