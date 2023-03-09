@@ -50,12 +50,12 @@ class Feeds(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     fromXmlUrl = db.Column(db.String(512), unique=False, nullable=False)
-    title = db.Column(db.String(128), unique=False, nullable=False)
-    link = db.Column(db.String(512), unique=True, nullable=False)
-    author = db.Column(db.String(32), unique=False, nullable=False)
-    published = db.Column(db.String(32), unique=False, nullable=False)
-    summary = db.Column(db.String(1024 * 10), unique=False, nullable=False)
-    content = db.Column(db.String(1024 * 10), unique=False, nullable=False)
+    title = db.Column(db.String(512), unique=False, nullable=False)
+    link = db.Column(db.String(1024), unique=False, nullable=False)
+    author = db.Column(db.String(128), unique=False, nullable=False)
+    published = db.Column(db.String(128), unique=False, nullable=False)
+    summary = db.Column(db.String(1024 * 1024 * 5), unique=False, nullable=False)
+    content = db.Column(db.String(1024 * 1024 * 5), unique=False, nullable=False)
 
     def __init__(self, fromXmlUrl, title, link, author, published, summary, content):
         self.fromXmlUrl = fromXmlUrl
@@ -73,17 +73,7 @@ with app.app_context():
     db.create_all()
 
 
-def start_feeds_parser():
-    from feeds import parse_feeds_background
-    print("start_feeds_parser entry")
-    d = threading.Thread(target=parse_feeds_background)
-    d.setDaemon(True)
-    d.setName("parse_feeds_background")
-    d.start()
-    print("start_feeds_parser leave")
-
 if __name__ == "__main__":
-    # start_feeds_parser()
     scheduler = APScheduler()
     scheduler.init_app(app)
     scheduler.start()

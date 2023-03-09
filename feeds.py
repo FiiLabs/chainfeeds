@@ -61,9 +61,12 @@ def parse_feeds(subOutlines):
 
     for sub_outline_title in subOutlines:
         xmlUrl = subOutlines[sub_outline_title].xmlUrl
-        print("parsing_feed:", xmlUrl)
+        #print("#######################################################")
+        #print("parsing_feed:", xmlUrl)
         feed = feedparser.parse(xmlUrl)
-        print("parsed_feed:", xmlUrl)
+        #kk = xmlUrl
+        #print("parsed_feed:", kk)
+        #print("#######################################################")
         if not xmlUrl in global_feeds_cache:
             global_feeds_cache[xmlUrl] = feed
         else:
@@ -72,22 +75,31 @@ def parse_feeds(subOutlines):
                 global_feeds_cache[xmlUrl] = feed
 
         # Write cache to db
-        print("write cache to db")
        
         entries = global_feeds_cache[xmlUrl].entries
-        for entry in entries:
-            with db.app.app_context():
-                feed_record = Feeds(xmlUrl, entry.title, entry.link, entry.author, entry.published, entry.summary, entry.content)
+        with db.app.app_context():
+            for entry in entries:
+                published = ""
+                content = ""
+                author = ""
+                if hasattr(entry, 'published'):
+                    published = entry.published
+                if hasattr(entry, 'content'):
+                    content = str(entry.content)
+                if hasattr(entry, 'author'):
+                    author  = entry.author
+                feed_record = Feeds(xmlUrl, entry.title, entry.link, author, published, entry.summary, content)
                 db.session.add(feed_record)
-                db.session.commit()
-                print("write feed entry to db:", entry.title)
-                print("write feed to db:", xmlUrl)
+                print("add feed_record title:", entry.title)
+            db.session.commit()
+                
 
 # define a background thread to parse all of the feeds
 def parse_feeds_background():
     print("parse_feeds_background")
-   # while True:
-    for main_outline_title in global_main_outlines:
-        suboutlines = global_main_outlines[main_outline_title]
-        parse_feeds(suboutlines)   
-       # time.sleep(5*60)
+    while True:
+        for main_outline_title in global_main_outlines:
+            suboutlines = global_main_outlines[main_outline_title]
+            parse_feeds(suboutlines)
+        print("parse_feeds_background sleep 45 minutes") 
+        time.sleep(45*60)
