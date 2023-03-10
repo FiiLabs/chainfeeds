@@ -48,7 +48,6 @@ def parse_feeds(subOutlines):
                         summary = entry.summary
                     feed_record = Feeds(xmlUrl.strip(), entry.title.strip(), entry.link.strip(), author.strip(), published.strip(),summary.strip(), content.strip())
                     db.session.add(feed_record)
-                    print("add feed_record title:", entry.title)
                 db.session.commit()
             except Exception as e:
                 print("database error:", e)
