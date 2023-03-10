@@ -1,4 +1,4 @@
-from flask_restx import Resource
+from flask_restx import Resource, reqparse
 from api import api
 import utils.feeds as feeds
 import utils.utils as utils

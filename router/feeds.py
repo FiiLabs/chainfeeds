@@ -51,7 +51,8 @@ def parse_feeds(subOutlines, main_outline_title):
                     db.session.add(feed_record)
                 db.session.commit()
             except Exception as e:
-                print("database error:", e)
+                pass
+                #print("database error:", e)
                 #db.session.rollback()
                 
 

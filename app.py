@@ -2,6 +2,7 @@ from flask import Flask
 from api import api_v1
 from router.mainoutlines import *
 from router.suboutlines import *
+from router.content.articles import *
 import config
 from flask_apscheduler import APScheduler
 from datetime import datetime
