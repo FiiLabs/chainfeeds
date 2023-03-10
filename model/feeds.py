@@ -6,6 +6,7 @@ db = DataBase.instance().db
 class Feeds(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
+    category = db.Column(db.String(128), unique=False, nullable=False)
     fromXmlUrl = db.Column(db.String(512), unique=False, nullable=False)
     title = db.Column(db.String(512), unique=False, nullable=False)
     link = db.Column(db.String(1024), unique=True, nullable=False)
@@ -14,7 +15,8 @@ class Feeds(db.Model):
     summary = db.Column(db.String(1024 * 1024 * 5), unique=False, nullable=False)
     content = db.Column(db.String(1024 * 1024 * 5), unique=False, nullable=False)
 
-    def __init__(self, fromXmlUrl, title, link, author, published, summary, content):
+    def __init__(self, category, fromXmlUrl, title, link, author, published, summary, content):
+        self.category = category
         self.fromXmlUrl = fromXmlUrl
         self.title = title
         self.link = link

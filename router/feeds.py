@@ -6,7 +6,7 @@ global_feeds_cache = {}
 
 
 # feeds parser
-def parse_feeds(subOutlines):
+def parse_feeds(subOutlines, main_outline_title):
     from model.feeds import Feeds
     from model.database import DataBase
 
@@ -46,7 +46,8 @@ def parse_feeds(subOutlines):
                         author  = entry.author
                     if hasattr(entry, 'summary'):
                         summary = entry.summary
-                    feed_record = Feeds(xmlUrl.strip(), entry.title.strip(), entry.link.strip(), author.strip(), published.strip(),summary.strip(), content.strip())
+                    feed_record = Feeds(main_outline_title.strip(),xmlUrl.strip(), entry.title.strip(), entry.link.strip(), 
+                                    author.strip(), published.strip(),summary.strip(), content.strip())
                     db.session.add(feed_record)
                 db.session.commit()
             except Exception as e:
@@ -61,7 +62,7 @@ def parse_feeds_background():
     while True:
         for main_outline_title in main_outlines:
             suboutlines = main_outlines[main_outline_title]
-            parse_feeds(suboutlines)
+            parse_feeds(suboutlines, main_outline_title)
         print("parse_feeds_background sleep 45 minutes") 
         time.sleep(45*60)
 
