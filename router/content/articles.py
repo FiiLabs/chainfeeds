@@ -15,13 +15,13 @@ resource_fields = api.model("Article", {
 @ns.route("/article")
 class Article(Resource):
     """Publish a new article from user"""
-    @ns.doc(parser=parser)
-    @ns.expect(parser)
-    @ns.marshal_with(resource_fields)
+    @ns.doc(parser=parser, body=resource_fields)
+    @ns.marshal_with(resource_fields, code=201, description="artcile created")
+    @ns.response(400, "Validation error")
     def post(self):
         args = parser.parse_args()
-        print ("totle: ", args["title"])
+        print ("title: ", args["title"])
         print ("content: ", args["content"])
-        return args, 200
+        return args, 201
         
 
