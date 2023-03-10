@@ -7,7 +7,10 @@ global_feeds_cache = {}
 
 # feeds parser
 def parse_feeds(subOutlines):
-    from app import db, Feeds
+    from model.feeds import Feeds
+    from model.database import DataBase
+
+    db = DataBase.instance().db
    
 
     for sub_outline_title in subOutlines:
