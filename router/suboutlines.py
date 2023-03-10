@@ -1,7 +1,7 @@
 from flask_restx import Resource
 from api import api
-import feeds
-import utils
+import utils.feeds as feeds
+import utils.utils as utils
 
 ns = api.namespace("suboutlines", description="main outlines operations")
 

@@ -1,11 +1,11 @@
 from flask_restx import Resource
-import feeds
+import utils.feeds as feeds
 from api import api
 
 
 ns = api.namespace("mainoutlines", description="main outlines operations")
 
-main_outlines_list = list(feeds.global_main_outlines.keys())
+main_outlines_list = list(feeds.get_main_outlines_from_chain_feeds())
 
 @ns.route("/")
 class MainOutlineList(Resource):
@@ -13,7 +13,8 @@ class MainOutlineList(Resource):
     def get(self):
         """List all main outlines"""
         main_outlines = []
-        for main_outline_title in feeds.global_main_outlines:
+        mainoutlines = feeds.get_main_outlines_from_chain_feeds()
+        for main_outline_title in mainoutlines:
             main_outlines.append({
             'index': main_outlines_list.index(main_outline_title),
             'title': main_outline_title,
@@ -28,7 +29,8 @@ class MainOutline(Resource):
         if index >= len(main_outlines_list):
             api.abort(404, "Main outline {} doesn't exist".format(index))
         main_outline_title = main_outlines_list[index]
-        suboutlines = feeds.global_main_outlines[main_outline_title]
+        mainoutlines = feeds.get_main_outlines_from_chain_feeds()
+        suboutlines = mainoutlines[main_outline_title]
         sub_outlines = []
         for sub_outline_title in suboutlines:
             sub_outlines.append({

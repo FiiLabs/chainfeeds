@@ -7,12 +7,12 @@ from router.suboutlines import *
 import config
 from flask_apscheduler import APScheduler
 from datetime import datetime
+from router.feeds import parse_feeds_background
 
 app = Flask(__name__)
 app.register_blueprint(api_v1)
 
 class Config:
-    from feeds import parse_feeds_background
     """App configuration."""
 
     JOBS = [{"id": "job1", "func": parse_feeds_background, "trigger": "interval", "seconds": 60*60*2}]
