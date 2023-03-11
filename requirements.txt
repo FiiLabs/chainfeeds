@@ -15,3 +15,4 @@ Flask-Login==0.6.2
 Flask-Cors==3.0.10
 locked-dict==2022.7.25
 Flask-APScheduler==1.12.4
+Flask-WTF==1.1.1
