@@ -43,7 +43,7 @@ db.app = app
 db.init_app(app)
 
 def init_models():
-    import model.user
+    import model.users
     import model.feeds
 
 init_models()

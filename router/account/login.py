@@ -1,6 +1,6 @@
 from flask_restx import Resource, reqparse, fields
 from api import api
-from model.user import User
+from model.users import Users
 from model.database import DataBase
 
 from flask_jwt_extended import create_access_token, create_refresh_token
@@ -29,19 +29,20 @@ resource_fields = api.model("Account", {
 @ns.route("/login")
 class Login(Resource):
     """ Login an account """
-    @ns.doc(parser=parser, body=resource_fields)
-    @ns.marshal_with(resource_fields, code=201, description="login success")
+    #@ns.doc(parser=parser, body=resource_fields)
+    @ns.doc(parser=parser)
+    #@ns.marshal_with(resource_fields, code=201, description="login success")
     @ns.response(400, "Login error")
     def post(self):
         args = parser.parse_args()
         print ("username: ", args["username"])
         print ("password: ", args["password"])
-        existing_username = User.query.filter_by(username=args["username"]).first()
+        existing_username = Users.query.filter_by(username=args["username"]).first()
         if not existing_username:
             return {"message": "username does not exist"}, 400
         if existing_username.password != args["password"]:
             return {"message": "password is incorrect"}, 400
-        access_token = create_access_token(identity=args["username"], fresh=True)
+        access_token = create_access_token(identity=args["username"])
         refresh_token = create_refresh_token(identity=args["username"])
         return {"access_token": access_token, "refresh_token": refresh_token}, 201
 
@@ -50,21 +51,22 @@ class Login(Resource):
 @ns.route("/register")
 class Register(Resource):
     """ Register an account"""
-    @ns.doc(parser=parser, body=resource_fields)
-    @ns.marshal_with(resource_fields, code=201, description="login success")
+    @ns.doc(parser=parser)
+    #@ns.marshal_with(resource_fields, code=201, description="login success")
     @ns.response(400, "Regsiter error")
     def post(self):
         args = parser.parse_args()
         print ("username: ", args["username"])
         print ("password: ", args["password"])
-        existing_username = User.query.filter_by(username=args["username"]).first()
+        existing_username = Users.query.filter_by(username=args["username"]).first()
         if existing_username:
             return {"message": "username already exists"}, 400
         
 
-        new_user = User(args["username"], args["password"], args["email"])
+        new_user = Users(args["username"], args["password"], args["email"])
         db.session.add(new_user)
         db.session.commit()
+        return {"message": "user created successfully"}, 201
         
 
 
@@ -73,17 +75,19 @@ class Register(Resource):
 class Logout(Resource):
     pass
 
-
+# https://flask-jwt-extended.readthedocs.io/en/stable/refreshing_tokens/
+# http POST :5000/refresh Authorization:"Bearer $REFRESH_TOKEN"
 @ns.route("/refresh")
 class Refresh(Resource):
     @jwt_required(refresh=True)
     def post(self):
         identity = get_jwt_identity()
-        access_token = create_access_token(identity=identity, fresh=False)
+        access_token = create_access_token(identity=identity)
         return {"access_token": access_token}, 201
     
+# http GET :5000/protected Authorization:"Bearer $JWT access token"
 @ns.route("/protected")
 class Protected(Resource):
-    @jwt_required(refresh=True)
+    @jwt_required()
     def get(self):
         return {"message": "protected"}, 201
