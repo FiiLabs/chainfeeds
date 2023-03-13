@@ -75,15 +75,15 @@ class Logout(Resource):
 
 
 @ns.route("/refresh")
-@jwt_required(refresh=True)
 class Refresh(Resource):
+    @jwt_required(refresh=True)
     def post(self):
         identity = get_jwt_identity()
         access_token = create_access_token(identity=identity, fresh=False)
         return {"access_token": access_token}, 201
     
 @ns.route("/protected")
-@jwt_required(refresh=True)
 class Protected(Resource):
+    @jwt_required(refresh=True)
     def get(self):
         return {"message": "protected"}, 201
