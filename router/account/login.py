@@ -92,4 +92,4 @@ class Protected(Resource):
     """ Protected resource for jwt test"""
     @jwt_required()
     def get(self):
-        return {"message": "protected"}, 201
+        return reply_message(201, "access jwt protected resource",None), 201
