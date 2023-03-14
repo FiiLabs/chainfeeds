@@ -45,6 +45,8 @@ db.init_app(app)
 def init_models():
     import model.users
     import model.feeds
+    import model.article
+    import model.comments
 
 init_models()
 
