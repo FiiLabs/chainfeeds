@@ -10,8 +10,8 @@ from flask_jwt_extended import jwt_required
 
 from utils.jwt  import revoke_token
 
-
 ns = api.namespace("account", description="account login & logout & register")
+
 db = DataBase.instance().db
 
 
@@ -26,6 +26,8 @@ resource_fields = api.model("Account", {
     'email': fields.String(required=False, description="Email of account"),
 })
 
+jwt_parser = reqparse.RequestParser()
+jwt_parser.add_argument("Authorization", type=str, required=True, help="Bearer JWT token", location="headers")
 
 # https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
 @ns.route("/login")
@@ -69,6 +71,7 @@ class Register(Resource):
 @ns.route("/logout")
 class Logout(Resource):
     """ Logout an account"""
+    @ns.doc(parser=jwt_parser)
     @jwt_required()
     def post(self):
         jti = get_jwt()["jti"]
@@ -80,6 +83,7 @@ class Logout(Resource):
 @ns.route("/refresh")
 class Refresh(Resource):
     """ Refresh JWT token"""
+    @ns.doc(parser=jwt_parser)
     @jwt_required(refresh=True)
     def post(self):
         identity = get_jwt_identity()
@@ -90,6 +94,7 @@ class Refresh(Resource):
 @ns.route("/protected")
 class Protected(Resource):
     """ Protected resource for jwt test"""
+    @ns.doc(parser=jwt_parser)
     @jwt_required()
     def get(self):
         return reply_message(201, "access jwt protected resource",None), 201
