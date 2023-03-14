@@ -5,8 +5,10 @@ from model.database import DataBase
 from utils.utils import reply_message
 
 from flask_jwt_extended import create_access_token, create_refresh_token
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, get_jwt
 from flask_jwt_extended import jwt_required
+
+from utils.jwt  import revoke_token
 
 
 ns = api.namespace("account", description="account login & logout & register")
@@ -35,8 +37,6 @@ class Login(Resource):
     @ns.response(400, "Login error")
     def post(self):
         args = parser.parse_args()
-        print ("username: ", args["username"])
-        print ("password: ", args["password"])
         existing_username = Users.query.filter_by(username=args["username"]).first()
         if not existing_username:
             return reply_message(400, "username does not exist", None), 400
@@ -67,13 +67,19 @@ class Register(Resource):
 
 
 @ns.route("/logout")
+@jwt_required()
 class Logout(Resource):
-    pass
+    """ Logout an account"""
+    def post(self):
+        jti = get_jwt()["jti"]
+        revoke_token(jti)
+        return reply_message(201, "logout successfully", {"jti": jti}), 201
 
 # https://flask-jwt-extended.readthedocs.io/en/stable/refreshing_tokens/
 # http POST :5000/refresh Authorization:"Bearer $REFRESH_TOKEN"
 @ns.route("/refresh")
 class Refresh(Resource):
+    """ Refresh JWT token"""
     @jwt_required(refresh=True)
     def post(self):
         identity = get_jwt_identity()
@@ -83,6 +89,7 @@ class Refresh(Resource):
 # http GET :5000/protected Authorization:"Bearer $JWT access token"
 @ns.route("/protected")
 class Protected(Resource):
+    """ Protected resource for jwt test"""
     @jwt_required()
     def get(self):
         return {"message": "protected"}, 201

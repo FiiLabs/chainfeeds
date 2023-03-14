@@ -9,6 +9,7 @@ from flask_apscheduler import APScheduler
 from datetime import datetime
 from router.feeds import parse_feeds_background
 from model.database import DataBase
+import utils.jwt
 
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
@@ -37,6 +38,11 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config.from_object(Config())
 jwt = JWTManager(app)
+
+
+@jwt.token_in_blocklist_loader
+def check_if_token_is_revoked(jwt_header: dict, jwt_payload: dict):
+    return utils.jwt.check_if_token_is_revoked(jwt_payload)
 
 db = DataBase.instance().db
 db.app = app
