@@ -37,6 +37,9 @@ app.config["JWT_SECRET_KEY"] = config.jwt_secret_key
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config.from_object(Config())
+
+
+
 jwt = JWTManager(app)
 
 
