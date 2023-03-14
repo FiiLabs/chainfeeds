@@ -44,7 +44,7 @@ class Login(Resource):
             return reply_message(400, "password is incorrect", {"username": existing_username}), 400
         access_token = create_access_token(identity=args["username"])
         refresh_token = create_refresh_token(identity=args["username"])
-        return reply_message(201, "login success", {"username": existing_username, "access_token": access_token, "refresh_token": refresh_token}), 400
+        return reply_message(201, "login success", {"username": existing_username.username, "access_token": access_token, "refresh_token": refresh_token}), 400
 
 @ns.route("/register")
 class Register(Resource):
