@@ -2,6 +2,7 @@ from flask_restx import Resource, reqparse, fields
 from api import api
 from model.users import Users
 from model.database import DataBase
+from utils.utils import reply_message
 
 from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_jwt_extended import get_jwt_identity
@@ -25,7 +26,6 @@ resource_fields = api.model("Account", {
 
 
 # https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
-
 @ns.route("/login")
 class Login(Resource):
     """ Login an account """
@@ -39,14 +39,12 @@ class Login(Resource):
         print ("password: ", args["password"])
         existing_username = Users.query.filter_by(username=args["username"]).first()
         if not existing_username:
-            return {"message": "username does not exist"}, 400
+            return reply_message(400, "username does not exist", None), 400
         if existing_username.password != args["password"]:
-            return {"message": "password is incorrect"}, 400
+            return reply_message(400, "password is incorrect", {"username": existing_username}), 400
         access_token = create_access_token(identity=args["username"])
         refresh_token = create_refresh_token(identity=args["username"])
-        return {"access_token": access_token, "refresh_token": refresh_token}, 201
-
-  
+        return reply_message(201, "login success", {"username": existing_username, "access_token": access_token, "refresh_token": refresh_token}), 400
 
 @ns.route("/register")
 class Register(Resource):
@@ -60,15 +58,12 @@ class Register(Resource):
         print ("password: ", args["password"])
         existing_username = Users.query.filter_by(username=args["username"]).first()
         if existing_username:
-            return {"message": "username already exists"}, 400
+            return reply_message(400, "username already exists", None), 400
         
-
         new_user = Users(args["username"], args["password"], args["email"])
         db.session.add(new_user)
         db.session.commit()
-        return {"message": "user created successfully"}, 201
-        
-
+        return reply_message(400, "user created successfully", {"username": args["username"]}), 201
 
 
 @ns.route("/logout")
@@ -83,7 +78,7 @@ class Refresh(Resource):
     def post(self):
         identity = get_jwt_identity()
         access_token = create_access_token(identity=identity)
-        return {"access_token": access_token}, 201
+        return reply_message(201, "token refresh successfully", {"access_token": access_token}), 201
     
 # http GET :5000/protected Authorization:"Bearer $JWT access token"
 @ns.route("/protected")

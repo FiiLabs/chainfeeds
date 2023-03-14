@@ -10,3 +10,10 @@ def remove_prefix(text, prefix):
     if text.find(prefix) > 0:
         return text[:text.index(prefix)]
     return text  # or whatever
+
+def reply_message(code, message, data):
+    return {
+        "code": code,
+        "message": message,
+        "data": data,
+    }
