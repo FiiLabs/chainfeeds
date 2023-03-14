@@ -9,9 +9,8 @@ class Article(db.Model):
     published = db.Column(db.DateTime, unique=False, nullable=False)
     content = db.Column(db.String(1024 * 1024 * 5), unique=False, nullable=False)
 
-    def __init__(self, title, link, author, published, summary, content):
+    def __init__(self, title, author, published, content):
         self.title = title
-        self.link = link
         self.author = author
         self.published = published
         self.content = content
