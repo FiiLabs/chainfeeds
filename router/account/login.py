@@ -67,9 +67,9 @@ class Register(Resource):
 
 
 @ns.route("/logout")
-@jwt_required()
 class Logout(Resource):
     """ Logout an account"""
+    @jwt_required()
     def post(self):
         jti = get_jwt()["jti"]
         revoke_token(jti)
